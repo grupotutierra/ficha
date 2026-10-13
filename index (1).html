@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ficha de Captación TuTierra</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&display=swap">
+<style>
+/* Layout: una columna tipo app de campo; encabezado fijo con progreso, pasos con botones grandes, barra de acción abajo */
+:root{
+  --bg:#EEF2EC; --card:#FFFFFF; --ink:#1B2A22; --muted:#5B6B61; --line:#CCD6CE;
+  --brand:#1F5F3F; --brand-ink:#FFFFFF; --soft:#DCEBDD; --ochre:#B7791F; --ok:#2E7D4F; --warn:#9A5B00; --err:#B3261E; --errbg:#FBE9E7;
+  --display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body:"Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#111814; --card:#1A231E; --ink:#E6EEE8; --muted:#9DB0A4; --line:#33433A;
+  --brand:#5FB487; --brand-ink:#0D1A12; --soft:#21362A; --ochre:#E0A84A; --ok:#6CC796; --warn:#E0A84A; --err:#F2827A; --errbg:#3A1D1B; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#111814; --card:#1A231E; --ink:#E6EEE8; --muted:#9DB0A4; --line:#33433A;
+  --brand:#5FB487; --brand-ink:#0D1A12; --soft:#21362A; --ochre:#E0A84A; --ok:#6CC796; --warn:#E0A84A; --err:#F2827A; --errbg:#3A1D1B; color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.45}
+.wrap{max-width:560px;margin:0 auto;padding-inline:16px;padding-block:0 160px}
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding-block:12px 10px;border-bottom:1px solid var(--line)}
+.brandrow{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.org{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.code{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+h1{font-family:var(--display);font-weight:800;font-size:22px;line-height:1.15;margin:2px 0 8px;text-wrap:balance}
+.bar{height:6px;border-radius:3px;background:var(--line);overflow:hidden}
+.bar>i{display:block;height:100%;background:var(--brand);transition:width .25s}
+.steps{display:flex;justify-content:space-between;margin-top:6px;font-size:12px;color:var(--muted);gap:4px}
+.steps b{color:var(--brand)}
+.tabs{display:flex;gap:6px;margin-top:10px}
+.tabs button{flex:1;min-height:40px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit;font-size:15px;font-weight:700}
+.tabs button[aria-pressed="true"]{background:var(--brand);color:var(--brand-ink);border-color:var(--brand)}
+h2{font-family:var(--display);font-weight:600;font-size:20px;margin:18px 0 2px}
+.sub{color:var(--muted);margin:0 0 12px;font-size:15px}
+.f{display:grid;gap:6px;margin-block:14px}
+.f>label,.lbl{font-weight:700;font-size:16px}
+.req{color:var(--err);margin-left:2px}
+.hint{font-size:14px;color:var(--muted)}
+input[type=text],input[type=tel],input[type=email],input[type=url],input[type=number],input[type=date],textarea,select{
+  width:100%;min-height:52px;padding:12px 14px;border-radius:12px;border:1.5px solid var(--line);background:var(--card);color:var(--ink);font:inherit;font-size:17px}
+textarea{min-height:88px;resize:vertical}
+input:focus,textarea:focus,select:focus,button:focus-visible{outline:3px solid var(--ochre);outline-offset:1px;border-color:var(--brand)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{min-height:46px;padding:10px 16px;border-radius:999px;border:1.5px solid var(--line);background:var(--card);color:var(--ink);font:inherit;font-size:16px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--brand);color:var(--brand-ink);border-color:var(--brand);font-weight:700}
+.chip.multi[aria-pressed="true"]::before{content:"✓ "}
+.inrow{display:flex;gap:8px;align-items:stretch}
+.inrow input{flex:1;min-width:0}
+.unit{display:flex;align-items:center;padding-inline:12px;border-radius:12px;background:var(--soft);font-weight:700;white-space:nowrap}
+.calc{padding:12px 14px;border-radius:12px;background:var(--soft);font-variant-numeric:tabular-nums}
+.calc b{font-size:20px}
+.err{display:none;color:var(--err);font-size:14px;font-weight:700}
+.f.bad .err{display:block}
+.f.bad input,.f.bad textarea,.f.bad .chips{border-color:var(--err)}
+.check{display:flex;gap:12px;align-items:flex-start;padding:14px;border-radius:12px;background:var(--card);border:1.5px solid var(--line)}
+.check input{width:26px;height:26px;flex:none;margin-top:2px;accent-color:var(--brand)}
+.note{padding:12px 14px;border-radius:12px;background:var(--soft);font-size:15px}
+.actions{margin-top:24px;padding-top:16px;border-top:1px solid var(--line)}
+.actions .in{display:flex;gap:10px}
+.btn{min-height:54px;border-radius:14px;border:0;font:inherit;font-size:17px;font-weight:700;padding-inline:18px;cursor:pointer}
+.btn.pri{flex:1;background:var(--brand);color:var(--brand-ink)}
+.btn.sec{background:var(--card);color:var(--ink);border:1.5px solid var(--line)}
+.btn[disabled]{opacity:.55}
+.sum{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:4px 14px}
+.sum h3{font-family:var(--display);font-size:16px;margin:12px 0 4px;color:var(--brand)}
+.sum dl{display:grid;grid-template-columns:minmax(0,42%) minmax(0,1fr);gap:4px 10px;margin:0 0 8px;font-size:15px}
+.sum dt{color:var(--muted)} .sum dd{margin:0;overflow-wrap:anywhere}
+.done{text-align:center;padding-block:28px}
+.done .big{font-family:var(--display);font-size:26px;font-weight:800;margin:6px 0}
+.pill{display:inline-block;padding:3px 10px;border-radius:999px;font-size:13px;font-weight:700;background:var(--soft);color:var(--brand)}
+.pill.g2{background:var(--soft);color:var(--ok)} .pill.ml{background:color-mix(in srgb,var(--ochre) 20%,transparent);color:var(--warn)} .pill.no{background:var(--errbg);color:var(--err)}
+.item{background:var(--card);border:1px solid var(--line);border-radius:14px;margin-block:10px;overflow:hidden}
+.item>button.head{all:unset;display:grid;gap:4px;width:100%;box-sizing:border-box;padding:14px;cursor:pointer}
+.item>button.head:focus-visible{outline:3px solid var(--ochre)}
+.item .l1{display:flex;justify-content:space-between;gap:8px;align-items:center}
+.item .who{font-weight:700;overflow-wrap:anywhere}
+.item .meta{font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums}
+.item .body{padding:0 14px 14px;border-top:1px solid var(--line)}
+.empty{padding:28px 16px;text-align:center;color:var(--muted);background:var(--card);border:1px dashed var(--line);border-radius:14px}
+.toast{position:fixed;left:50%;bottom:calc(90px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;font-size:15px;z-index:9}
+pre.wa{white-space:pre-wrap;font-family:var(--body);font-size:14px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;max-height:260px;overflow:auto;text-align:left}
+.editbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:10px;padding:8px 8px 8px 12px;border-radius:12px;background:color-mix(in srgb,var(--ochre) 18%,transparent);color:var(--ink);font-size:15px;font-weight:700}
+.btn.sm{min-height:40px;font-size:14px;padding-inline:12px}
+.btn.danger{background:var(--err);color:var(--card)}
+.rowbtns{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.rowbtns .btn{flex:1 1 auto}
+.confirm{margin-top:12px;padding:12px;border-radius:12px;background:var(--errbg);color:var(--err);font-weight:700;display:grid;gap:10px}
+.edited{font-size:13px;color:var(--warn)}
+@media (prefers-reduced-motion:reduce){.bar>i{transition:none}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="top">
+    <div class="brandrow"><span class="org">Grupo TuTierra · MAPRO-CAP-F01</span><span class="code" id="codeTag"></span></div>
+    <h1 id="hTitle">Ficha de captación de predio</h1>
+    <div id="progressBox"><div class="bar"><i id="barFill" style="width:20%"></i></div><div class="steps" id="stepsLbl"></div></div>
+    <div class="editbar" id="editBar" hidden><span id="editTxt"></span><button type="button" class="btn sec sm" id="btnCancelEdit">Cancelar</button></div>
+  </header>
+  <main id="main"></main>
+  <div class="actions" id="actions"><div class="in">
+    <button type="button" class="btn sec" id="btnBack">Atrás</button>
+    <button type="button" class="btn pri" id="btnNext">Siguiente</button>
+  </div></div>
+</div>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+const STEPS=[
+ {t:"Originador",s:"Quién presenta el predio a la empresa",f:[
+  {k:"or_nombre",l:"Nombres y apellidos",type:"text",req:1,ac:"name"},
+  {k:"or_tel",l:"Teléfono / WhatsApp",type:"tel",req:1},
+  {k:"or_dni",l:"DNI",type:"digits"},
+  {k:"or_correo",l:"Correo",type:"email"},
+  {k:"or_vinculo",l:"Vínculo con la empresa",type:"one",req:1,o:["Personal interno","Red externa","Corredor","Referido","Otro"]},
+  {k:"medio",l:"¿Cómo llegó el predio?",type:"one",req:1,o:["Redes sociales","Revista","Aviso in situ","Referido","Corredor","Otro"]},
+  {k:"medio_otro",l:"Especifica el medio",type:"text",when:["medio","Otro"]}
+ ]},
+ {t:"Propietario",s:"Datos de quien vende o de su representante",f:[
+  {k:"pr_nombre",l:"Nombres y apellidos o razón social",type:"text",req:1},
+  {k:"pr_tel",l:"Teléfono / WhatsApp",type:"tel",req:1},
+  {k:"pr_doc",l:"DNI / RUC",type:"digits"},
+  {k:"pr_civil",l:"Estado civil",type:"one",o:["Soltero(a)","Casado(a)","Conviviente","Divorciado(a)","Viudo(a)","Es empresa"],h:"Si es casado(a), también firma el cónyuge."},
+  {k:"pr_correo",l:"Correo",type:"email"},
+  {k:"pr_unico",l:"¿Es propietario único?",type:"one",req:1,o:["Sí","No","No sabe"]},
+  {k:"pr_coprop",l:"¿Quiénes son los copropietarios?",type:"area",when:["pr_unico","No"],h:"Nombres y, si se sabe, porcentaje de cada uno."},
+  {k:"pr_rep",l:"¿Actúa por medio de un representante?",type:"one",o:["No","Sí"]},
+  {k:"pr_rep_nombre",l:"Nombre del representante",type:"text",when:["pr_rep","Sí"]},
+  {k:"pr_rep_poder",l:"¿Tiene poder vigente?",type:"one",o:["Sí","No","No sabe"],when:["pr_rep","Sí"]}
+ ]},
+ {t:"Predio",s:"Ubicación, tamaño y situación del terreno",f:[
+  {k:"distrito",l:"Distrito",type:"text",req:1,h:"Ejemplo: Chinchero, Urubamba, Calca."},
+  {k:"provincia",l:"Provincia / Departamento",type:"text",def:"Cusco"},
+  {k:"ubicacion",l:"Ubicación y referencias",type:"area",h:"Sector, comunidad, cómo llegar."},
+  {k:"maps",l:"Enlace de Google Maps o coordenadas",type:"url",h:"En Maps: mantén presionado el punto → Compartir → Copiar enlace."},
+  {k:"area",l:"Área aproximada",type:"area_num",req:1},
+  {k:"tipo",l:"Tipo de predio",type:"one",o:["Urbano","Rústico o agrícola","Eriazo","No sabe"]},
+  {k:"partida_tiene",l:"¿Tiene partida registral inscrita?",type:"one",req:1,o:["Sí","No","No sabe"]},
+  {k:"partida",l:"N.º de partida registral",type:"digits",when:["partida_tiene","Sí"]},
+  {k:"titularidad",l:"Situación de titularidad",type:"one",o:["Título inscrito","Compraventa sin inscribir","Posesión","Sucesión","Comunidad o asociación","Otro"]},
+  {k:"acceso",l:"Acceso",type:"many",o:["Pista","Trocha carrozable","Camino de herradura","Sin acceso"]},
+  {k:"servicios",l:"Servicios cercanos",type:"many",o:["Agua","Luz","Desagüe","Ninguno"]},
+  {k:"ocupantes",l:"¿Hay ocupantes o construcciones?",type:"one",o:["No","Sí"]},
+  {k:"ocupantes_det",l:"Detalle de ocupantes o construcciones",type:"text",when:["ocupantes","Sí"]},
+  {k:"cargas",l:"¿Cargas, litigios o deudas conocidos?",type:"one",o:["No","Sí","No sabe"],h:"Servidumbres, hipotecas, juicios, deudas de predial."},
+  {k:"cargas_det",l:"¿Cuáles?",type:"text",when:["cargas","Sí"]}
+ ]},
+ {t:"Condiciones",s:"Qué espera el propietario",f:[
+  {k:"busca",l:"¿Qué busca el propietario?",type:"one",req:1,o:["Vender el terreno completo","Que le vendamos lotes (corretaje)","Asociarse aportando el terreno","No lo tiene claro"]},
+  {k:"precio_m2",l:"Precio esperado por m²",type:"money"},
+  {k:"total",l:"Precio total esperado",type:"total"},
+  {k:"pago",l:"Forma de pago esperada",type:"one",o:["Contado","Fraccionado","Contra ventas","Otro"]},
+  {k:"urgencia",l:"Urgencia de venta",type:"one",o:["Alta","Media","Baja"]},
+  {k:"urg_motivo",l:"Motivo de la urgencia",type:"text",when:["urgencia","Alta","Media"]},
+  {k:"compromiso",l:"¿Acepta firmar un compromiso condicionado y permitir estudios de 30 a 60 días?",type:"one",o:["Sí","No","Por consultar"]}
+ ]},
+ {t:"Envío",s:"Documentos, autorizaciones y revisión final",f:[
+  {k:"docs",l:"Documentos que ya tienes",type:"many",o:["Copia de DNI","Partida registral","Título de propiedad","Fotografías","Plano","Enlace de ubicación"],h:"Envía los archivos por WhatsApp a Administración indicando el código de la ficha."},
+  {k:"aut_prop",l:"¿El propietario autorizó el uso de sus datos para evaluar el predio?",type:"one",req:1,o:["Sí, autorizó","Aún no"]},
+  {k:"obs",l:"Observaciones",type:"area"},
+  {k:"decl",l:"Declaro que la información es veraz y que no he asumido compromisos ni prometido precios en nombre de la empresa.",type:"check",req:1}
+ ]}
+];
+const ALLF=STEPS.flatMap(s=>s.f);
+const fmtS=n=>"S/ "+Number(n).toLocaleString("es-PE",{maximumFractionDigits:2});
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const $=id=>document.getElementById(id);
+const DRAFT="tt-ficha-draft-v1";
+
+let S={}, step=0, sent=null, editing=null;
+
+function newState(){
+  const v={area_u:"m²"};
+  ALLF.forEach(f=>{ if(f.def) v[f.k]=f.def; if(f.type==="many") v[f.k]=[]; });
+  return v;
+}
+function loadDraft(){ try{const d=JSON.parse(localStorage.getItem(DRAFT)||"null"); if(d&&d.v){S=d.v;step=d.step||0;return}}catch(e){} S=newState(); }
+function saveDraft(){ if(editing) return; try{localStorage.setItem(DRAFT,JSON.stringify({v:S,step}))}catch(e){} }
+function clearDraft(){ try{localStorage.removeItem(DRAFT)}catch(e){} }
+
+const visible=f=>!f.when||f.when.slice(1).includes(S[f.when[0]]);
+function areaM2(){ const a=parseFloat(S.area); if(!a) return 0; return S.area_u==="ha"?a*10000:a; }
+function totalCalc(){ const p=parseFloat(S.precio_m2), a=areaM2(); return p&&a?p*a:0; }
+function categoria(m2){ if(!m2) return ""; if(m2>=10000) return "Grande (1 ha o más)"; if(m2>=1000) return "Mediano (0.1 a 0.9 ha)"; if(m2>=90) return "Pequeño (90 a 999 m²)"; return "Menor a 90 m²"; }
+
+function fieldHTML(f){
+  if(!visible(f)) return "";
+  const v=S[f.k], id="f_"+f.k, rq=f.req?'<span class="req" aria-hidden="true">*</span>':"";
+  const lab=`<label for="${id}">${esc(f.l)}${rq}</label>`, hint=f.h?`<div class="hint">${esc(f.h)}</div>`:"";
+  const err=`<div class="err">Completa este dato para continuar.</div>`;
+  let inner="";
+  switch(f.type){
+    case "text": inner=`<input type="text" id="${id}" data-k="${f.k}" value="${esc(v)}" ${f.ac?`autocomplete="${f.ac}"`:""}>`; break;
+    case "tel": inner=`<input type="tel" id="${id}" data-k="${f.k}" inputmode="tel" autocomplete="tel" value="${esc(v)}" placeholder="9XX XXX XXX">`; break;
+    case "email": inner=`<input type="email" id="${id}" data-k="${f.k}" inputmode="email" autocomplete="email" value="${esc(v)}">`; break;
+    case "url": inner=`<input type="url" id="${id}" data-k="${f.k}" inputmode="url" value="${esc(v)}" placeholder="https://maps.app.goo.gl/…">`; break;
+    case "digits": inner=`<input type="text" id="${id}" data-k="${f.k}" inputmode="numeric" value="${esc(v)}">`; break;
+    case "area": inner=`<textarea id="${id}" data-k="${f.k}">${esc(v)}</textarea>`; break;
+    case "one": case "many":
+      inner=`<div class="chips" role="group" aria-label="${esc(f.l)}">`+f.o.map(o=>{
+        const on=f.type==="one"?v===o:(v||[]).includes(o);
+        return `<button type="button" class="chip${f.type==="many"?" multi":""}" data-k="${f.k}" data-v="${esc(o)}" data-t="${f.type}" aria-pressed="${on}">${esc(o)}</button>`}).join("")+"</div>";
+      return `<div class="f" data-f="${f.k}"><span class="lbl">${esc(f.l)}${rq}</span>${hint}${inner}${err}</div>`;
+    case "area_num":
+      inner=`<div class="inrow"><input type="number" id="${id}" data-k="area" inputmode="decimal" step="any" min="0" value="${esc(v)}"><div class="chips" role="group" aria-label="Unidad">${["m²","ha"].map(u=>`<button type="button" class="chip" data-k="area_u" data-v="${u}" data-t="one" aria-pressed="${S.area_u===u}">${u}</button>`).join("")}</div></div><div class="hint" id="catHint">${esc(categoria(areaM2()))}</div>`; break;
+    case "money": inner=`<div class="inrow"><span class="unit">S/</span><input type="number" id="${id}" data-k="${f.k}" inputmode="decimal" step="any" min="0" value="${esc(v)}"></div>`; break;
+    case "total": {
+      const t=totalCalc();
+      inner=`<div class="calc" id="totalBox">${t?`<b>${fmtS(t)}</b><div class="hint">Calculado: ${areaM2().toLocaleString("es-PE")} m² × ${fmtS(S.precio_m2)}</div>`:'<span class="hint">Se calcula con el área y el precio por m².</span>'}</div>
+      <label for="f_total_txt" class="hint">¿Pidió otro monto o precio por lote? Escríbelo aquí:</label>
+      <input type="text" id="f_total_txt" data-k="total_txt" value="${esc(S.total_txt)}" placeholder="Ej.: S/ 55,000 por lote">`;
+      return `<div class="f" data-f="${f.k}"><span class="lbl">${esc(f.l)}</span>${inner}</div>`;
+    }
+    case "check":
+      return `<div class="f" data-f="${f.k}"><label class="check" for="${id}"><input type="checkbox" id="${id}" data-k="${f.k}" ${v?"checked":""}><span>${esc(f.l)}${rq}</span></label>${err}</div>`;
+  }
+  return `<div class="f" data-f="${f.k}">${lab}${hint}${inner}${err}</div>`;
+}
+
+function renderForm(){
+  const st=STEPS[step];
+  $("barFill").style.width=((step+1)/STEPS.length*100)+"%";
+  $("stepsLbl").innerHTML=`<span>Paso <b>${step+1}</b> de ${STEPS.length} · <b>${st.t}</b></span><span>${step<STEPS.length-1?"Sigue: "+STEPS[step+1].t:"Último paso"}</span>`;
+  let h=`<h2>${esc(st.t)}</h2><p class="sub">${esc(st.s)}</p>`+st.f.map(fieldHTML).join("");
+  if(step===STEPS.length-1) h+=`<h2>Revisa antes de enviar</h2><div class="sum">${summaryHTML(S)}</div>`;
+  $("main").innerHTML=h;
+  $("btnBack").hidden=step===0;
+  $("btnNext").textContent=step===STEPS.length-1?(editing?"Guardar cambios":"Enviar ficha"):"Siguiente";
+  $("editBar").hidden=!editing;
+  if(editing) $("editTxt").textContent="Corrigiendo "+editing.codigo;
+}
+
+function display(f,v,obj){
+  if(f.type==="check") return v?"Sí":"";
+  if(f.type==="many") return (v||[]).join(", ");
+  if(f.type==="area_num") return v?`${Number(v).toLocaleString("es-PE")} ${obj.area_u||"m²"}`:"";
+  if(f.type==="money") return v?fmtS(v):"";
+  if(f.type==="total"){ const a=(obj.area_u==="ha"?parseFloat(obj.area)*10000:parseFloat(obj.area))||0, p=parseFloat(obj.precio_m2)||0; return [a&&p?fmtS(a*p):"",obj.total_txt||""].filter(Boolean).join(" · "); }
+  return v||"";
+}
+function rows(obj){
+  return STEPS.map(s=>({t:s.t,items:s.f.filter(f=>f.k!=="decl"&&(!f.when||f.when.slice(1).includes(obj[f.when[0]]))).map(f=>[f.l,display(f,obj[f.k],obj)]).filter(r=>r[1])}));
+}
+function summaryHTML(obj){
+  return rows(obj).map(g=>g.items.length?`<h3>${esc(g.t)}</h3><dl>${g.items.map(([l,v])=>`<dt>${esc(l)}</dt><dd>${esc(v)}</dd>`).join("")}</dl>`:"").join("");
+}
+function waText(rec){
+  const L=[`*FICHA DE CAPTACIÓN ${rec.codigo}*`,`Recibida: ${rec.recibido_txt}`];
+  const cat=categoria(rec.area_m2); if(cat) L.push(`Categoría referencial: ${cat}`);
+  rows(rec.v).forEach(g=>{ if(!g.items.length) return; L.push("",`*${g.t.toUpperCase()}*`); g.items.forEach(([l,v])=>L.push(`• ${l}: ${v}`)); });
+  L.push("","Declaración del originador aceptada.");
+  return L.join("\n");
+}
+
+function validate(){
+  let first=null;
+  STEPS[step].f.forEach(f=>{
+    if(!f.req||!visible(f)) return;
+    const v=S[f.k]; let ok=f.type==="many"?(v||[]).length>0:f.type==="check"?!!v:String(v??"").trim()!=="";
+    if(f.type==="area_num") ok=parseFloat(S.area)>0;
+    const box=document.querySelector(`[data-f="${f.k}"]`); if(box) box.classList.toggle("bad",!ok);
+    if(!ok&&!first) first=box;
+  });
+  if(first){ first.scrollIntoView({behavior:"smooth",block:"center"}); const i=first.querySelector("input,textarea,button"); if(i) i.focus({preventScroll:true}); return false; }
+  return true;
+}
+
+function toast(msg){ const t=$("toast"); t.textContent=msg; t.hidden=false; clearTimeout(toast._t); toast._t=setTimeout(()=>t.hidden=true,2600); }
+async function copyText(txt){
+  try{ await navigator.clipboard.writeText(txt); toast("Copiado. Pégalo en WhatsApp."); }
+  catch(e){ const p=$("waPre"); if(p){ const r=document.createRange(); r.selectNodeContents(p); const s=getSelection(); s.removeAllRanges(); s.addRange(r);} toast("Mantén presionado el texto y elige Copiar."); }
+}
+
+function pad(n){return String(n).padStart(2,"0")}
+/* ---------- Conexión con Google (Apps Script) ---------- */
+const API="https://script.google.com/macros/s/AKfycbzlxl1AO3wOoPxZinmeJ4iJs-74O5K5apspd1kGAiS3cXTyA4G2UJdMqh_ePBPS83RJ/exec";
+const ACC={guardarFicha:"guardar",obtenerFicha:"obtener",actualizarFicha:"actualizar"};
+async function run(fn,...args){
+  const q={accion:ACC[fn]};
+  if(fn==="guardarFicha") q.datos=args[0];
+  else { q.codigo=args[0]; q.clave=args[1]; if(fn==="actualizarFicha") q.datos=args[2]; }
+  let res;
+  try{ res=await fetch(API,{method:"POST",credentials:"omit",redirect:"follow",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(q)}); }
+  catch(e){ throw new Error("Sin conexión. Revisa tu internet e inténtalo otra vez."); }
+  let j; try{ j=await res.json(); }catch(e){ throw new Error("El servidor no respondió bien. Inténtalo en un momento."); }
+  if(!j.ok) throw new Error(j.error||"No se pudo completar.");
+  return j.data;
+}
+const errMsg=e=>String((e&&e.message)||e||"").replace(/^Exception:\s*/,"")||"No se pudo enviar. Revisa tu conexión e inténtalo otra vez.";
+
+async function submit(){
+  const btn=$("btnNext"), wasEdit=!!editing;
+  btn.disabled=true; btn.textContent=wasEdit?"Guardando…":"Enviando…";
+  try{
+    const data=JSON.stringify(S);
+    const r=wasEdit?await run("actualizarFicha",editing.codigo,editing.clave,data):await run("guardarFicha",data);
+    sent={...r,v:JSON.parse(data),edited:wasEdit};
+    editing=null; clearDraft(); renderDone(); scrollTo(0,0);
+  }catch(e){
+    toast(errMsg(e)); btn.textContent=wasEdit?"Guardar cambios":"Enviar ficha";
+  }
+  btn.disabled=false;
+}
+
+function renderDone(){
+  const r=sent;
+  $("progressBox").hidden=true; $("editBar").hidden=true;
+  $("main").innerHTML=`<div class="done"><span class="pill g2">${r.edited?"Cambios guardados":"Ficha enviada"}</span>
+    <div class="big">${esc(r.codigo)}</div>
+    <p class="sub">Fecha y hora de recepción: <b>${esc(r.recibido_txt)}</b>${r.edited&&r.editado_txt?`<br>Corregida: ${esc(r.editado_txt)}`:""}</p>
+    <p>${r.edited?"Administración recibió la corrección con el PDF actualizado. La fecha y hora de recepción original se mantiene.":"Administración ya recibió tu ficha con el PDF oficial. Envía los documentos del predio (DNI, partida, fotos) por WhatsApp indicando el código."}</p>
+    ${r.pdfBase64?`<button type="button" class="btn pri" style="width:100%;margin-block:4px 6px" data-pdf="1">Descargar mi copia en PDF</button><p class="hint">Si no se descarga, y dejaste tu correo, también te llega una copia por correo.</p>`:""}
+    </div>
+    ${r.editUrl?`<div class="f"><span class="lbl">Enlace para corregir esta ficha</span><div class="hint">Guárdalo. Con él puedes corregir datos mientras Administración no la evalúe.</div>
+      <div class="inrow"><input type="text" id="editUrl" readonly value="${esc(r.editUrl)}"><button type="button" class="btn sec sm" data-copylink="1">Copiar</button></div></div>`:""}
+    <div class="f"><span class="lbl">Resumen para WhatsApp</span><pre class="wa" id="waPre">${esc(waText(r))}</pre></div>`;
+  $("btnBack").hidden=false; $("btnBack").textContent="Nueva ficha";
+  $("btnNext").textContent="Copiar resumen para WhatsApp";
+}
+
+function downloadPdf(){
+  try{
+    const bin=atob(sent.pdfBase64), u8=new Uint8Array(bin.length);
+    for(let i=0;i<bin.length;i++) u8[i]=bin.charCodeAt(i);
+    const url=URL.createObjectURL(new Blob([u8],{type:"application/pdf"}));
+    const a=document.createElement("a"); a.href=url; a.download=String(sent.pdfName||(sent.codigo+".pdf")).normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^\w.\- ]+/g,"").replace(/\s+/g," ").trim(); document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),60000);
+  }catch(e){ toast("No se pudo descargar en este teléfono."); }
+}
+
+function screenMsg(title,body){
+  $("progressBox").hidden=true; $("editBar").hidden=true; $("actions").hidden=true;
+  $("main").innerHTML=`<div class="done"><div class="big" style="font-size:22px">${esc(title)}</div><p>${body}</p></div>`;
+}
+
+async function startFromLink(codigo,clave){
+  screenMsg("Cargando ficha…","Un momento, por favor.");
+  try{
+    const r=await run("obtenerFicha",codigo,clave);
+    if(r.bloqueada){ screenMsg(`Ficha ${r.codigo} ya evaluada`,"Administración ya tomó una decisión sobre esta ficha, por eso no se puede corregir desde aquí. Si hay un error, comunícate con Administración."); return; }
+    S=r.v; if(!S.area_u) S.area_u="m²"; editing={codigo:r.codigo,clave}; step=0;
+    $("actions").hidden=false; $("progressBox").hidden=false; renderForm();
+  }catch(e){ screenMsg("No se pudo abrir la ficha",esc(errMsg(e))); }
+}
+
+/* ---------- Eventos ---------- */
+document.addEventListener("input",e=>{
+  const k=e.target.dataset&&e.target.dataset.k; if(!k) return;
+  S[k]=e.target.type==="checkbox"?e.target.checked:e.target.value;
+  const box=e.target.closest(".f"); if(box) box.classList.remove("bad");
+  if(k==="area"||k==="precio_m2"){ const tb=$("totalBox"); if(tb){ const t=totalCalc(); tb.innerHTML=t?`<b>${fmtS(t)}</b><div class="hint">Calculado: ${areaM2().toLocaleString("es-PE")} m² × ${fmtS(S.precio_m2)}</div>`:'<span class="hint">Se calcula con el área y el precio por m².</span>'; } const ch=$("catHint"); if(ch) ch.textContent=categoria(areaM2()); }
+  saveDraft();
+});
+document.addEventListener("change",e=>{ if(e.target.type==="checkbox"){ S[e.target.dataset.k]=e.target.checked; e.target.closest(".f").classList.remove("bad"); saveDraft(); }});
+document.addEventListener("click",e=>{
+  const c=e.target.closest(".chip");
+  if(c&&c.dataset.k){
+    const k=c.dataset.k, v=c.dataset.v;
+    if(c.dataset.t==="one"){ S[k]=S[k]===v&&k!=="area_u"?"":v; }
+    else { const a=new Set(S[k]||[]); a.has(v)?a.delete(v):a.add(v); S[k]=[...a]; }
+    saveDraft(); const y=scrollY; renderForm(); scrollTo(0,y); return;
+  }
+  if(e.target.closest("[data-pdf]")){ downloadPdf(); return; }
+  if(e.target.closest("[data-copylink]")){ const i=$("editUrl"); navigator.clipboard.writeText(i.value).then(()=>toast("Enlace copiado."),()=>{ i.select(); toast("Mantén presionado y elige Copiar."); }); }
+});
+$("btnNext").addEventListener("click",()=>{
+  if(sent){ copyText(waText(sent)); return; }
+  if(!validate()) return;
+  if(step<STEPS.length-1){ step++; saveDraft(); renderForm(); scrollTo(0,0); } else submit();
+});
+$("btnBack").addEventListener("click",()=>{
+  if(sent){ sent=null; S=newState(); step=0; $("btnBack").textContent="Atrás"; $("progressBox").hidden=false; renderForm(); scrollTo(0,0); return; }
+  if(step>0){ step--; saveDraft(); renderForm(); scrollTo(0,0); }
+});
+$("btnCancelEdit").addEventListener("click",()=>{ editing=null; loadDraft(); renderForm(); scrollTo(0,0); });
+
+const PARAMS=(()=>{ const u=new URLSearchParams(location.search); return {ficha:u.get("ficha")||"",clave:u.get("clave")||""}; })();
+if(PARAMS.ficha&&PARAMS.clave){ S=newState(); startFromLink(PARAMS.ficha,PARAMS.clave); }
+else { loadDraft(); renderForm(); }
+
+</script>
+</body>
+</html>
